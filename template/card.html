@@ -1,0 +1,164 @@
+{template 'common/header'}
+
+<div class="main">
+    <a href="javascript:cupmodal(0);" class="btn btn-primary pull-left"><span>+</span>添加新卡</a>
+    <div style="padding: 15px;">
+        <table class="table table-hover table-striped table-condensed">
+            <thead class="navbar-inner">
+            <tr>
+                <th style="text-align: center;">卡名</th>
+                <th style="text-align: center;">时长</th>
+                <th style="text-align: center;">价格</th>
+                <th style="text-align: center;">折扣</th>
+                <th style="text-align: center;">备注</th>
+                <th style="text-align: center;">状态</th>
+                <th style="text-align: center;">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {loop $list $item}
+            <tr>
+                <td style="text-align: center;">{$item['name']}</td>
+                <td style="text-align: center;">{$item['daynum']}</td>
+                <td style="text-align: center;">{$item['price']}</td>
+                <td style="text-align: center;">{$item['discount']}</td>
+                <td style="text-align: center;">{$item['content']}</td>
+                <td style="text-align: center;">{php echo empty($item['status'])?'显示':'隐藏'}</td>
+                <td style="text-align: center;">
+                    <a href="javascript:cupmodal({$item['id']},'{$item['name']}','{$item['daynum']}','{$item['price']}','{$item['discount']}','{$item['discountcolor']}','{$item['content']}','{$item['status']}','{$item['thumb']}','{media $item['thumb']}');"
+                       title="编辑" class="btn btn-small">编辑</a>
+                </td>
+            </tr>
+            {/loop}
+            </tbody>
+
+        </table>
+        {$pager}
+    </div>
+
+</div>
+
+<!-- 模态框（Modal） -->
+<style>
+    .modal-backdrop{
+        z-index: 400;
+    }
+    #myModal{
+        z-index: 500;
+    }
+    .we7-modal-dialog .modal-content, .modal-dialog .modal-content{
+        max-height: 800px;
+    }
+</style>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">×
+                </button>
+            </div>
+            <form action="" method="post" class="form-horizontal">
+                <div class="modal-body" id="mo-content" >
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">展示图</label>
+                        <div class="col-sm-4 col-xs-6" >
+                            {php echo tpl_form_field_image('thumb', '')}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label must">卡名</label>
+                        <div class="col-sm-4 col-xs-6" >
+                            <input type="text" name="name" id="name" class="form-control" value="" data-rule-required="true" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">时长</label>
+                        <div class="col-sm-4 col-xs-6" >
+                            <input type="text" name="daynum" id="daynum" class="form-control" value="" data-rule-required="true" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">价格</label>
+                        <div class="col-sm-4 col-xs-6" >
+                            <input type="text" name="price" id="price" class="form-control" value="" data-rule-required="true" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">折扣</label>
+                        <div class="col-sm-4 col-xs-6" >
+                            <input type="text" name="discount" id="discount" class="form-control" value="" data-rule-required="true" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">折扣颜色</label>
+                        <div class="col-sm-4 col-xs-6" >
+                            <input type="color" name="discountcolor" id="discountcolor" class="form-control" value="" data-rule-required="true" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">备注</label>
+                        <div class="col-sm-8 col-xs-6" >
+                            <textarea name="content" class="form-control" ></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">状态</label>
+                        <div class="col-sm-4 col-xs-6" >
+                            <label class="radio-inline"><input type="radio" name="status" value="0" aria-invalid="false" class="valid">显示</label>
+                            <label class="radio-inline"><input type="radio" name="status" value="1" aria-invalid="false" class="valid">隐藏</label>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <input type="hidden" name="id" value="" >
+                    <button type="submit" class="btn btn-primary">提交更改</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script>
+    function cupmodal(id,name,daynum,price,discount,discountcolor,content,status,thumb,thumb2) {
+        if(id==0){
+            $("input[name='id']").val('');
+            $("input[name='name']").val('');
+            $("input[name='daynum']").val('');
+            $("input[name='price']").val('');
+            $("input[name='discount']").val('');
+            $("input[name='discountcolor']").val('');
+            $("textarea[name='content']").val('');
+            $("input[name='thumb']").val('');
+            $(".img-thumbnail").attr('src','')
+            $("input[name='status']").eq(0).prop('checked',1);
+        }else {
+            $("input[name='id']").val(id);
+            $("input[name='name']").val(name);
+            $("input[name='daynum']").val(daynum);
+            $("input[name='price']").val(price);
+            $("input[name='discount']").val(discount);
+            $("input[name='discountcolor']").val(discountcolor);
+            $("textarea[name='content']").val(content);
+            $("input[name='thumb']").val(thumb);
+            $(".img-thumbnail").attr('src',thumb2)
+            if(status==1){
+                $("input[name='status']").eq(1).prop('checked',1);
+            }else {
+                $("input[name='status']").eq(0).prop('checked',1);
+            }
+        }
+
+        $('#myModal').modal();
+    }
+</script>
+
+{template 'common/footer'}

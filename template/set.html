@@ -1,0 +1,35 @@
+{template 'common/header'}
+
+<div class="clearfix">
+    <div class="form-group">
+    </div>
+
+    <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" id="form1">
+        <div class="panel panel-default">
+            <div class="panel-heading">系统设置</div>
+            <div class="panel-body">
+
+
+                <div class="form-group">
+
+                    <label class="col-sm-2 control-label">模板消息id</label>
+
+                    <div class="col-sm-10">
+
+                        <input type="text" class="form-control" name="tmpid" value="{$set['tmpid']}">
+
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1" />
+                        <input type="hidden" name="token" value="{$_W['token']}" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{template 'common/footer'}

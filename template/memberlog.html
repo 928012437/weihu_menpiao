@@ -1,0 +1,91 @@
+{template 'common/header'}
+
+<div class="main">
+    <a href="{php echo $this->createWebUrl('member')}" class="btn btn-default pull-left">返回</a>
+    <a href="{php echo $this->createWebUrl('memberlogexport',array('mid'=>$_GPC['mid']))}" class="btn btn-primary pull-left" style="margin-left: 20px" ><span>+</span>导出</a>
+    <div style="padding: 15px;">
+        <table class="table table-hover table-striped table-condensed">
+            <thead class="navbar-inner">
+            <tr>
+                {if empty($_GPC['mid'])}
+                <th style="text-align: center;">姓名</th>
+                <th style="text-align: center;">照片</th>
+                <th style="text-align: center;">手机号</th>
+                {/if}
+                <th style="text-align: center;">ip</th>
+                <th style="text-align: center;">备注</th>
+                <th style="text-align: center;">扫码时间</th>
+                <th style="text-align: center;">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {loop $list $item}
+            <tr>
+                {if empty($_GPC['mid'])}
+                <td style="text-align: center;">{$item['member']['name']}</td>
+                <td style="text-align: center;"><img src="{$item['member']['photo']}" style="width: 50px;"></td>
+                <td style="text-align: center;">{$item['member']['mobile']}</td>
+                {/if}
+                <td style="text-align: center;">{$item['ip']}</td>
+                <td style="text-align: center;">{$item['content']}</td>
+                <td style="text-align: center;">{php echo date('Y-m-d H:i:s',$item['createtime'])}</td>
+                <td style="text-align: center;">
+                    <a href="javascript:cupmodal({$item['id']},'{$item['content']}');"
+                       title="编辑" class="btn btn-small">编辑</a>
+                </td>
+            </tr>
+            {/loop}
+            </tbody>
+
+        </table>
+        {$pager}
+    </div>
+
+</div>
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">×
+                </button>
+            </div>
+            <form action="" method="post" class="form-horizontal">
+                <div class="modal-body" id="mo-content" >
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">备注</label>
+                        <div class="col-sm-8 col-xs-6" >
+                            <textarea name="content" class="form-control" ></textarea>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <input type="hidden" name="id" value="" >
+                    <button type="submit" class="btn btn-primary">提交更改</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script>
+    function cupmodal(id,content) {
+        if(id==0){
+            $("input[name='id']").val('');
+            $("textarea[name='content']").val('');
+        }else {
+            $("input[name='id']").val(id);
+            $("textarea[name='content']").val(content);
+        }
+
+        $('#myModal').modal();
+    }
+</script>
+
+{template 'common/footer'}

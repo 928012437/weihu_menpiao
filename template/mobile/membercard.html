@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-cn" class="hb-loaded">
+<head>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0"/>
+    <title>购买</title>
+    <link rel="stylesheet" href="../addons/weihu_menpiao/static/sm.min.css">
+    <script type='text/javascript' src='../addons/weihu_menpiao/static/zepto.min.js' charset='utf-8'></script>
+    <script type='text/javascript' src='../addons/weihu_menpiao/static/sm.min.js' charset='utf-8'></script>
+    <style>
+        .list-block{
+            margin: 10px 0;
+        }
+    </style>
+</head>
+
+<body>
+<div class="page-group">
+    <div class="page" >
+        <header class="bar bar-nav">
+            <button class="button pull-left" onclick="location.href='{php echo $this->createMobileUrl('index')}'">
+                返回
+            </button>
+            <button class="button pull-right" onclick="buycard()">
+                购买记录
+            </button>
+            <h1 class='title'>购买</h1>
+        </header>
+
+        <div class="content">
+            <form action="" method="post" role="form" enctype="multipart/form-data" >
+
+                <div class="buttons-tab">
+                    {loop $cards $k $c}
+                    <a href="#tab{php echo $k+1}" class="tab-link {if $k==0}{php $cardid=$c['id']}{php $cardprice=$c['price']}active{/if} button" onclick="changecardid({$c['id']},'{$c['price']}')" >{$c['name']}</a>
+                    {/loop}
+                </div>
+                <div class="content-block">
+                    <div class="tabs">
+                        {loop $cards $k $c}
+                        <div id="tab{php echo $k+1}" class="tab {if $k==0}active{/if}">
+                            <div class="list-block">
+                                <ul>
+                                    <li>
+                                        <div class="item-content">
+                                            <div class="item-media"><i class="icon icon-form-name"></i></div>
+                                            <div class="item-inner">
+                                                <img src="{media $c['thumb']}" style="width: 100%;height: auto;" >
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="item-content">
+                                            <div class="item-media"><i class="icon icon-form-name"></i></div>
+                                            <div class="item-inner">
+                                                <div class="item-title label">天数</div>
+                                                <div class="item-input">
+                                                    <input type="text" id="daynum" readonly value="{$c['daynum']}" >
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <div class="item-content">
+                                            <div class="item-media"><i class="icon icon-form-name"></i></div>
+                                            <div class="item-inner">
+                                                <div class="item-title label">金额</div>
+                                                <div class="item-input">
+                                                    <div style="float: left;">{$c['price']}</div>
+                                                    {if !empty($c['discount'])}
+                                                    <button class="button" style="float:left;margin-left: 8px;{if !empty($c['discountcolor'])}border: 1px solid {$c['discountcolor']};color: {$c['discountcolor']};{/if}">{$c['discount']}</button>
+                                                    {/if}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </div>
+                        {/loop}
+                    </div>
+                </div>
+
+                <div class="list-block">
+                    <ul>
+
+                        {if $member['expiretime']<time()}
+                        <li>
+                            <div class="item-content">
+                                <div class="item-media"><i class="icon icon-form-name"></i></div>
+                                <div class="item-inner">
+                                    <div class="item-title label">生效时间</div>
+                                    <div class="item-input">
+                                        <input type="date" value="{php echo date('Y-m-d')}" >
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        {/if}
+
+                    </ul>
+                </div>
+                <div class="content-block">
+                    <div class="row">
+                        <input type="hidden" id="cardid" name="cardid" value="{$cardid}">
+                        <input type="hidden" id="cardprice" name="cardprice" value="{$cardprice}">
+                        <div ><a href="javascript:paycard()" class="button button-big button-fill button-success">立即购买</a></div>
+                        <!--<div ><a href="javascript:;" class="button button-big button-fill button-success js-wechat-pay">立即购买</a></div>-->
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+        <div class="popup popup-buycard">
+            <div class="content-block">
+                <p><a href="#" class="close-popup button">返回</a></p>
+                {loop $list $v}
+                <div class="content-block-title">{php echo date('Y-m-d H:s',$v['createtime'])}</div>
+                <div class="list-block">
+                    <ul>
+                        <li class="item-content">
+                            <div class="item-media"><i class="icon icon-f7"></i></div>
+                            <div class="item-inner">
+                                <div class="item-title">{$v['name']}</div>
+                                <div class="item-after">{$v['daynum']}天</div>
+                            </div>
+                        </li>
+                        <li class="item-content">
+                            <div class="item-media"><i class="icon icon-f7"></i></div>
+                            <div class="item-inner">
+                                <div class="item-title">开始时间</div>
+                                <div class="item-after">{php echo $v['starttime']==0?'未改变':date('Y-m-d H:i',$v['starttime'])}</div>
+                            </div>
+                        </li>
+                        <li class="item-content">
+                            <div class="item-media"><i class="icon icon-f7"></i></div>
+                            <div class="item-inner">
+                                <div class="item-title">结束时间</div>
+                                <div class="item-after">{php echo date('Y-m-d H:i',$v['endtime'])}</div>
+                            </div>
+                        </li>
+                        <li class="item-content">
+                            <div class="item-media"><i class="icon icon-f7"></i></div>
+                            <div class="item-inner">
+                                <div class="item-title">价格</div>
+                                <div class="item-after">{php echo $v['price2']==-1?$v['price'].'(后台充卡)':$v['price']}</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                {/loop}
+
+                {$pager}
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--<script type='text/javascript' src='../app/resource/js/lib/mui.min.js' charset='utf-8'></script>-->
+<!--<script type='text/javascript' src='../app/resource/js/app/util.js' charset='utf-8'></script>-->
+<script>
+    function paycard() {
+        var cardid=$("#cardid").val();
+        var starttime=$("#datetime-picker").val();
+        var url="{php echo $this->createMobileUrl('wxpay')}&cardid="+cardid+"&starttime="+starttime;
+        location.href=url;
+    }
+function buycard() {
+    $.popup('.popup-buycard');
+}
+function changecardid(cardid,cardprice) {
+    $("#cardid").val(cardid);
+    $("#cardprice").val(cardprice);
+}
+    // document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+    //
+    //     $('.js-wechat-pay').click(function(){
+    //         var cardid=$("#cardid").val();
+    //         var cardprice=$("#cardprice").val();
+    //                 util.pay({
+    //                     orderFee : cardprice,
+    //                     payMethod : 'wechat',
+    //                     orderTitle : '自助充卡',
+    //                     orderTid : Date.parse(new Date()),
+    //                     module : 'recharge',
+    //                     success : function(result) {
+    //                         alert('支付成功');
+    //                     },
+    //                     fail : function(result) {
+    //                         alert('fail : ' + result.message);
+    //                     },
+    //                     complete:function () {
+    //
+    //                     }
+    //                 });
+    //
+    //     });
+    //     $('.js-wechat-pay').html('微信支付');
+    // });
+
+</script>
+</body>
+
+</html>

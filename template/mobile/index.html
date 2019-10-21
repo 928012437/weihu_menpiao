@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-cn" class="hb-loaded">
+<head>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0"/>
+    <title>入园码</title>
+    <link rel="stylesheet" href="../addons/weihu_menpiao/static/sm.min.css">
+
+    <link rel="stylesheet" href="../addons/weihu_menpiao/static/slider.css?v=2">
+
+    <style>
+        #l-map{
+            height:400px;
+            width:100%;
+            float:left;
+        }
+        .inputstyle{
+
+            width: 100%;
+
+            height: 100%;
+
+            cursor: pointer;
+
+            font-size: 30px;
+
+            outline: medium none;
+
+            position: absolute;
+
+            filter:alpha(opacity=0);
+
+            -moz-opacity:0;
+
+            opacity:0;
+
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="bar bar-nav">
+    {if empty($_GPC['paysuccess'])}
+    <button id="backbtn" class="button pull-left" style="display: none;" onclick="history.back()">
+        返回
+    </button>
+    {/if}
+    <h1 class='title'>入园码</h1>
+</header>
+
+<div class="content">
+    {if !empty($list)}
+    <div id="sliderBox"></div>
+    {/if}
+    <div class="card demo-card-header-pic" style="width: 75%; margin-left: 12.5%; margin-top: 5%">
+        <div valign="bottom" class="card-header color-white no-border no-padding">
+            <img class='card-cover' id="qrcode" src="{php echo $this->createMobileUrl('getqrcode',array('id'=>$member['id']))}" onclick="reqrcode()" alt="">
+        </div>
+    </div>
+
+    <form action="" method="post" role="form" enctype="multipart/form-data" >
+
+        <div class="list-block">
+            <ul>
+                <!-- Text inputs -->
+                <li style="display: none">
+                    <div class="item-content">
+                        <div class="item-media"><i class="icon icon-form-password"></i></div>
+                        <div class="item-inner">
+                            <div class="item-title label">昵称</div>
+                            <div class="item-input">
+                                <input type="text" name="nickname" placeholder="未获取到" readonly value="{$fans['nickname']}">
+                            </div>
+                        </div>
+                    </div>
+                </li>
+
+                <li style="display: none">
+                    <div class="item-content">
+                        <div class="item-media"><i class="icon icon-form-name"></i></div>
+                        <div class="item-inner">
+                            <div class="item-title label">头像</div>
+                            <div class="item-input">
+                                <input type="hidden" name="avatar" value="{$fans['avatar']}" >
+                                <img src="{$fans['avatar']}" style="width: 50px;height: 50px;margin-top: 5px;">
+                            </div>
+                        </div>
+                    </div>
+                </li>
+
+                <li>
+                    <div class="item-content"><div onclick="$('#nametel').toggle()" >个人信息<span class="icon icon-down"></span></div></div>
+                </li>
+
+                <div id="nametel" {if !empty($member['name'])}style="display: none"{/if} >
+
+                    <li>
+                        <div class="item-content">
+                            <div class="item-media"><i class="icon icon-form-name"></i></div>
+                            <div class="item-inner">
+                                <div class="item-title label">姓名</div>
+                                <div class="item-input">
+                                    <input type="text" name="name" value="{$member['name']}" placeholder="请输入真实姓名">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li>
+                        <div class="item-content">
+                            <div class="item-media"><i class="icon icon-form-name"></i></div>
+                            <div class="item-inner">
+                                <div class="item-title label">手机号</div>
+                                <div class="item-input">
+                                    <input type="text" name="mobile" value="{$member['mobile']}" placeholder="请输入手机号" >
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </div>
+
+
+                {if empty($member['photo'])}
+                <li>
+                    <div class="item-content">
+                        <div class="item-media"><i class="icon icon-form-name"></i></div>
+                        <div class="item-inner">
+                            <div class="item-title label">照片</div>
+                            <div class="item-input" style="cursor:pointer;">
+                                <input type="file" id="fileElem" class="inputstyle" accept="image/*" name="imgfile1" >
+                                <img src="../addons/weihu_menpiao/uoload.png" onclick="openBrowse()" style="width: 50px;height: 50px;margin-top: 10px;cursor:pointer;" >
+                                <div class="content-block-title" style="float: right;">请上传本人照片</div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                {/if}
+
+                <!--<li>-->
+                    <!--<div class="item-content">-->
+                        <!--<div class="item-media"><i class="icon icon-form-name"></i></div>-->
+                        <!--<div class="item-inner">-->
+                            <!--<div class="item-title label">有效期</div>-->
+                            <!--<div class="item-input">-->
+                                <!--<input type="text" readonly value="{php echo (empty($member['starttime'])&&empty($member['expiretime']))?'未开通':date('Y-m-d',$member['starttime']).'~'.date('Y-m-d',$member['expiretime'])}" >-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</li>-->
+
+                <!--<li>-->
+                    <!--<div class="item-content">-->
+                        <!--<div class="item-media"><i class="icon icon-form-name"></i></div>-->
+                        <!--<div class="item-inner">-->
+                            <!--<div class="item-title label">生效日期</div>-->
+                            <!--<div class="item-input">-->
+                                <!--<input type="text" readonly value="{php echo $member['starttime']?date('Y-m-d',$member['starttime']):'未开通'}" >-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</li>-->
+
+            </ul>
+        </div>
+        <div class="content-block">
+            <div class="row">
+                <!--<div class="col-50"><a href="javascript:$('form').submit()" class="button button-big button-fill button-success">保存</a></div>-->
+                <div class="col-50"><a href="javascript:duihuakuang();" class="button button-big button-fill button-success">保存</a></div>
+                <div class="col-50"><a href="javascript:duihuakuang2();" class="button button-big button-fill button-warning" >{if $member['expiretime']>time()}续期{else}开通{/if}</a></div>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<script type="text/javascript" src="../web/resource/js/lib/jquery-1.11.1.min.js"></script>
+<script type='text/javascript' src='../addons/weihu_menpiao/static/zepto.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='../addons/weihu_menpiao/static/sm.min.js' charset='utf-8'></script>
+<script src="../addons/weihu_menpiao/static/toucher.js"></script>
+<script src="../addons/weihu_menpiao/static/zepto.touchslider.js"></script>
+<script>
+    $(function() {
+        $("input[name='imgfile1']").change(function () {
+            var file = this.files[0];
+            var r = new FileReader();
+            r.readAsDataURL(file);
+            $(r).load(function () {
+                $("input[name='imgfile1']").next().attr('src', this.result);
+            })
+        })
+
+        if(!(document.referrer === '')){
+            $("#backbtn").show();
+        }
+
+    })
+
+    function openBrowse(){
+        var evt = new MouseEvent("click", {
+            bubbles: false,
+            cancelable: true,
+            view: window
+        });
+        inputNode.dispatchEvent(evt);
+    }
+
+    function reqrcode() {
+        $("#qrcode").attr('src','../addons/weihu_menpiao/loading.gif');
+        $("#qrcode").attr("onclick",null);
+        setTimeout(function () {
+            $("#qrcode").attr('src',"{php echo $this->createMobileUrl('getqrcode',array('id'=>$member['id']))}");
+            $("#qrcode").attr("onclick",'reqrcode()');
+        },1000);
+    }
+
+    function duihuakuang() {
+
+        var formData = new FormData();
+        formData.append("nickname", $.trim($("input[name='nickname']").val()));
+        formData.append("avatar", $.trim($("input[name='avatar']").val()));
+        formData.append("name", $.trim($("input[name='name']").val()));
+        formData.append("mobile", $.trim($("input[name='mobile']").val()));
+        if(typeof $('#fileElem')[0]!='undefined'){
+            formData.append("imgfile1",$('#fileElem')[0].files[0]);
+        }
+
+            $.ajax({
+                type: "POST",   //提交的方法
+                dataType:'json',
+                url:"", //提交的地址
+                data:formData,// 序列化表单值
+                async: false,
+                processData : false, // 使数据不做处理
+                contentType : false, // 不要设置Content-Type请求头
+                error: function(request) {  //失败的话
+                    alert("网络错误");
+                },
+                success: function(data) {  //成功
+                    // var d=eval("("+data+")");
+                    var d=data;
+                    if(d.status==1){
+                        Zepto.alert('修改成功!')
+                    }else {
+                        Zepto.alert(d.msg)
+                        $('#nametel').show()
+                    }
+                }
+            });
+
+    }
+
+    function duihuakuang2() {
+
+        var formData = new FormData();
+        var nickname=$.trim($("input[name='nickname']").val())
+        var avatar=$.trim($("input[name='avatar']").val())
+        var name=$.trim($("input[name='name']").val())
+        var mobile=$.trim($("input[name='mobile']").val())
+        formData.append("nickname", nickname);
+        formData.append("avatar", avatar);
+        formData.append("name", name);
+        formData.append("mobile", mobile);
+
+        if(name==''||mobile==''){
+            Zepto.alert('信息不全！');
+            $('#nametel').show();
+            return;
+        }
+
+        if(typeof $('#fileElem')[0]!='undefined'){
+            formData.append("imgfile1",$('#fileElem')[0].files[0]);
+            if(typeof $('#fileElem')[0].files[0]=='undefined'){
+                Zepto.alert('请上传照片');return;
+            }
+        }
+
+        if('{$member['name']}'==name&&'{$member['mobile']}'==mobile){
+            location.href="{php echo $this->createMobileUrl('membercard')}";
+        }
+
+        $.ajax({
+            type: "POST",   //提交的方法
+            dataType:'json',
+            url:"", //提交的地址
+            data:formData,// 序列化表单值
+            async: false,
+            processData : false, // 使数据不做处理
+            contentType : false, // 不要设置Content-Type请求头
+            error: function(request) {  //失败的话
+                alert("网络错误");
+            },
+            success: function(data) {  //成功
+                var d=data;
+                if(d.status==1){
+                    location.href="{php echo $this->createMobileUrl('membercard')}";
+                }else {
+                    Zepto.alert(d.msg)
+                    $('#nametel').show()
+                }
+            }
+        });
+    }
+
+    $(function(){
+        Zepto('#sliderBox').touchslider({
+            srcArr: [
+                {loop $list $v}
+                [
+                    "{media $v['thumb']}",
+                    "{$v['url']}"
+                ],
+                {/loop}
+            ]
+        });
+    });
+</script>
+
+</body>
+
+</html>

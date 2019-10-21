@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns="http://20190709.jnweishangjia.com" versionCode="2.0">
+    <application setting="true">
+        <name><![CDATA[微狐门票]]></name>
+        <identifie><![CDATA[weihu_menpiao]]></identifie>
+        <version><![CDATA[1.0]]></version>
+        <type><![CDATA[business]]></type>
+        <ability><![CDATA[微狐门票]]></ability>
+        <description><![CDATA[微狐门票]]></description>
+        <author><![CDATA[微狐网络]]></author>
+        <url><![CDATA[http://20190709.jnweishangjia.com]]></url>
+    </application>
+    <platform>
+        <subscribes>
+        </subscribes>
+        <handles>
+            <message type="text" />
+        </handles>
+        <rule embed="false" />
+        <card embed="false" />
+    </platform>
+    <bindings>
+        <cover>
+            <entry title="用户入口" do="index" />
+            <entry title="管理员入口" do="index2" />
+        </cover>
+        <menu>
+            <entry title="用户管理" do="member" direct="false" />
+            <entry title="卡管理" do="card" direct="false" />
+            <entry title="白名单" do="whiteip" direct="false" />
+            <entry title="广告图" do="adv" direct="false" />
+            <entry title="设置" do="set" direct="false" />
+        </menu>
+    </bindings>
+    <install></install>
+    <uninstall></uninstall>
+    <upgrade></upgrade>
+</manifest>

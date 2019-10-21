@@ -1,0 +1,102 @@
+{template 'common/header'}
+
+<div class="main">
+    <a href="javascript:cupmodal(0);" class="btn btn-primary pull-left"><span>+</span>添加广告</a>
+    <div style="padding: 15px;">
+        <table class="table table-hover table-striped table-condensed">
+            <thead class="navbar-inner">
+            <tr>
+                <th style="text-align: center;">链接</th>
+                <th style="text-align: center;">图片</th>
+                <th style="text-align: center;">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {loop $list $item}
+            <tr>
+                <td style="text-align: center;">{$item['url']}</td>
+                <td style="text-align: center;"><img src="{media $item['thumb']}" style="width: 50px;"></td>
+                <td style="text-align: center;">
+                    <a href="javascript:cupmodal({$item['id']},'{$item['url']}','{$item['thumb']}','{media $item['thumb']}');"
+                       title="编辑" class="btn btn-small">编辑</a>
+                    <a href="javascript:if(confirm('是否删除？')){location.href='{php echo $this->createWebUrl('adv',array('id'=>$item['id'],'del'=>1))}'};"
+                       title="删除" class="btn btn-small">删除</a>
+                </td>
+            </tr>
+            {/loop}
+            </tbody>
+
+        </table>
+        {$pager}
+    </div>
+
+</div>
+
+<!-- 模态框（Modal） -->
+<style>
+    .modal-backdrop{
+        z-index: 400;
+    }
+    #myModal{
+        z-index: 500;
+    }
+    .we7-modal-dialog .modal-content, .modal-dialog .modal-content{
+        max-height: 800px;
+    }
+</style>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">×
+                </button>
+            </div>
+            <form action="" method="post" class="form-horizontal">
+                <div class="modal-body" id="mo-content" >
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">展示图</label>
+                        <div class="col-sm-4 col-xs-6" >
+                            {php echo tpl_form_field_image('thumb', '')}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label must">链接</label>
+                        <div class="col-sm-4 col-xs-6" >
+                            <input type="text" name="url" id="url" class="form-control" value="" data-rule-required="true" />
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <input type="hidden" name="id" value="" >
+                    <button type="submit" class="btn btn-primary">提交更改</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script>
+    function cupmodal(id,url,thumb,thumb2) {
+        if(id==0){
+            $("input[name='id']").val('');
+            $("input[name='url']").val('');
+            $("input[name='thumb']").val('');
+            $(".img-thumbnail").attr('src','')
+        }else {
+            $("input[name='id']").val(id);
+            $("input[name='url']").val(url);
+            $("input[name='thumb']").val(thumb);
+            $(".img-thumbnail").attr('src',thumb2)
+        }
+
+        $('#myModal').modal();
+    }
+</script>
+
+{template 'common/footer'}
